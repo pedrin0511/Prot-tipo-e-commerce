@@ -1,0 +1,2089 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Bushel Fulfillment™ and Bushel Production™  API Documentation",
+    "description": "Bushel reserves the right to make backwards-compatible additions to any of these schemas at any point without prior notice.\nTo ensure that your integration is not adversely impacted by any of these changes, make sure your JSON deserialization is configured to allow/ignore unknown properties.\n\nDeprecated properties should not be used -- they will be removed in future versions. This removal will be\ncommunicated months in advance and we will work with you to avoid any interruptions to your service. We recommend\nmigrating to the specified alternatives (see the notes on each deprecated property).\n\nID fields should be treated as opaque identifiers -- do not attempt to parse them.\n\n5xx errors are often thrown directly by the web server and JSON data cannot be guaranteed to contain a JSON body. For this reason, the body should not be parsed and a generic message should be shown to the user.\n\n# Authentication\n\n<!-- ReDoc-Inject: <security-definitions> -->",
+    "version": "1.5.3",
+    "contact": {
+      "email": "support@bushelpowered.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "Bushel Fulfillment™",
+      "description": "Bushel Fulfillment™ enables better business relationships among grain companies regardless of the technology they\nuse to manage their operation. Bushel Fulfillment™ empowers:\n\n* Fast business decisions: Digitally and securely access contracts with multiple grain companies.\n* Precise contract fulfillment: Updated information on open and fulfilled contracts in minutes, not days.\n* Paperless reconciliation: Proof of delivery without a paper scale ticket.\n* Efficient execution: Settle contracts without waiting on paper-based proof of delivery.\n\nBushel Fulfillment™ is designed for both traditional grain companies with physical assets as well as grain\nmarketing firms, direct shippers, or nontraditional grain entities. No matter how they purchase grain and sell it\nto other partners in the supply chain, Bushel Fulfillment™ brings transparency and efficiency to their business.\n"
+    },
+    {
+      "name": "Bushel Production™",
+      "description": "Bushel Production™ enables Farmers to share digital copies of their scale tickets and contract data with\nBushel Production™ customers.\n\nWhether for regulatory/auditing purposes (crop insurance), for accounting/profitability analysis (farm management\nsoftware), or something else entirely - Bushel Production™  has you covered.\n"
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://centre.scaleticket.net"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "StaticKeyAuth": {
+        "description": "Custom shared-key authentication mechanism used for webhooks. Key will be provided by Bushel.",
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    }
+  },
+  "paths": {
+    "/partner": {
+      "get": {
+        "x-internal-note": "TODO - rename endpoint to something more suitable",
+        "operationId": "getPartner",
+        "tags": [
+          "Bushel Production™"
+        ],
+        "summary": "Subscription Management",
+        "description": "Farmers can use the UI found at this URL to opt-in to sharing their scale ticket and contract data with the\nBushel Production customer. This opt-in process is as follows:\n1. The farmer is directed to the /partner webpage, via e.g. a link or button presented to them on the\n   Bushel Production customer's website or application.\n2. The farmer logs in to Bushel.\n3. The farmer selects the accounts they wish to share with the Bushel Production customer.\n4. The farmer is redirected back to the customer's website or application.\n\nScale ticket and contract from the subscribed account(s) will then be periodically transmitted to the Bushel\nProduction™ customer's $CUSTOMER_BASE_URL/feed endpoint.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "description": "Where the user should be redirected to after configuring their subscriptions.",
+            "name": "callback_url",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "url",
+              "example": "https://customer.example.com"
+            }
+          },
+          {
+            "in": "query",
+            "name": "display_name",
+            "description": "The name of the Bushel Production customer. It will be displayed on the subscription management page.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "InsuranceCo"
+            }
+          },
+          {
+            "in": "query",
+            "name": "partner_id",
+            "description": "Provided by the Bushel Production customer as a unique identifier to correlate subscription changes with\ntheir system. This value is used to scope subscription management - i.e. only subscriptions created with the\nsame partner_id will be shown to the user on subsequent visits.\n\nFor example, if the Farmer sets up a subscription for their account and the value 'abc' was provided\nas the partner_id, then revisits the page with a partner_id of '123', the subscription will not be\nshown. However, if the partner_id of 'abc' is passed, the subscription that was created will be displayed\nfor editing.\n\nAn example of how this feature could be used: A crop insurance company could use this to scope subscriptions\nto specific policies, such that their Farmers or Agents can manage data subscriptions for multiple insurance\npolicies separately.\n",
+            "required": true,
+            "x-internal-note": "TODO - deprecate and replace with external_id",
+            "schema": {
+              "type": "string",
+              "example": "123-456-789"
+            }
+          },
+          {
+            "in": "query",
+            "name": "partner_slug",
+            "description": "A unique identifier for the Customer's channel. Provided by Bushel.",
+            "x-internal-note": "TODO - deprecate and replace with channel_slug",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "PARTNER_SLUG"
+            }
+          },
+          {
+            "in": "query",
+            "name": "phone",
+            "description": "Optionally pre-loads the farmer's phone number on the initial authentication screen.\nThis should be 10 digits with NO other characters.\n",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "phone",
+              "example": 5555555555
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "callbacks": {
+          "onData": {
+            "{$request.query.callback_url}": {
+              "get": {
+                "operationId": "onDataCallback",
+                "summary": "Redirection of a user back to the Bushel Production/Fulfillment Customer's Site / Application",
+                "parameters": [
+                  {
+                    "in": "query",
+                    "name": "partner_id",
+                    "description": "The value provided by in the initial /partner request",
+                    "required": true,
+                    "schema": {
+                      "type": "string",
+                      "example": "123-456-789"
+                    }
+                  },
+                  {
+                    "in": "query",
+                    "name": "status",
+                    "description": "Indicates the outcome of the flow. Will be one of the following values: success, cancel, error.",
+                    "required": true,
+                    "schema": {
+                      "type": "string",
+                      "example": "success"
+                    }
+                  }
+                ],
+                "responses": {
+                  "202": {
+                    "description": "Accepted"
+                  },
+                  "500": {
+                    "description": "Internal server error"
+                  }
+                }
+              }
+            },
+            "{$CUSTOMER_BASE_URL}/subscribe": {
+              "post": {
+                "operationId": "subscribeCallback",
+                "summary": "Customer Account Subscribed Notification",
+                "description": "A callback which is invoked when the user sets up a subscription for one of their accounts. All the data (from 2016-01-01 forward) for the newly subscribed accounts will be pushed in a job that runs 15 minutes after the hour.",
+                "security": [
+                  {
+                    "StaticKeyAuth": []
+                  }
+                ],
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "required": [
+                              "version",
+                              "partner_id",
+                              "external_id",
+                              "id",
+                              "user",
+                              "accounts"
+                            ],
+                            "description": "A record used to establish the data-sharing link between a user and their accounts.",
+                            "properties": {
+                              "version": {
+                                "type": "string",
+                                "deprecated": true,
+                                "description": "Deprecated."
+                              },
+                              "partner_id": {
+                                "type": "string",
+                                "deprecated": true,
+                                "description": "Deprecated. Superceded by `external_id`."
+                              },
+                              "external_id": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "An ancillary identifier provided as a query parameter in the initial redirect to /partner. Any consequent subscription management will be scoped, or unique, to this value.",
+                                "x-internal-note": "Allows Bushel and a third-party to create unique associations across differing identity models. E.g. When connecting Bushel accounts to insurance policies, each subscription is policy-specific."
+                              },
+                              "id": {
+                                "type": "string",
+                                "description": "Uniquely identifies the subscription",
+                                "x-internal-note": "The subcription id (data_partner_company_user.id)."
+                              },
+                              "user": {
+                                "type": "object",
+                                "description": "The Bushel user the subscription belongs to",
+                                "required": [
+                                  "id",
+                                  "company_user_id",
+                                  "remote_id",
+                                  "full_name",
+                                  "company_id",
+                                  "company_slug",
+                                  "company_name"
+                                ],
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "description": "The unique ID of the Bushel user.",
+                                    "x-internal-note": "Currently is user.id"
+                                  },
+                                  "full_name": {
+                                    "type": "string",
+                                    "description": "The name of the user in the Bushel system.",
+                                    "nullable": true,
+                                    "x-internal-note": "Marked as nullable"
+                                  },
+                                  "company_user_id": {
+                                    "type": "string",
+                                    "deprecated": true,
+                                    "description": "Deprecated. Use the `data.id` property to uniquely identify the subscription. Use `accounts[].id` to identify the account."
+                                  },
+                                  "remote_id": {
+                                    "type": "string",
+                                    "deprecated": true,
+                                    "description": "Deprecated. Use the `accounts[].remote_id` property to identify the account in the source system."
+                                  },
+                                  "company_id": {
+                                    "type": "string",
+                                    "deprecated": true,
+                                    "description": "Deprecated. Superceded by `accounts[].company`."
+                                  },
+                                  "company_slug": {
+                                    "type": "string",
+                                    "deprecated": true,
+                                    "description": "Deprecated. Superceded by `accounts[].company`."
+                                  },
+                                  "company_name": {
+                                    "type": "string",
+                                    "deprecated": true,
+                                    "description": "Deprecated. Superceded by `accounts[].company`."
+                                  }
+                                }
+                              },
+                              "accounts": {
+                                "type": "array",
+                                "description": "The account(s) associated with the subscription.",
+                                "items": {
+                                  "type": "object",
+                                  "required": [
+                                    "id",
+                                    "remote_id",
+                                    "name",
+                                    "company"
+                                  ],
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "description": "The unique identifier for the account in the Bushel system",
+                                      "x-internal-note": "In keeping with the convention, this is company_id_remote_id (company_users.company_id_remote_id)"
+                                    },
+                                    "remote_id": {
+                                      "type": "string",
+                                      "description": "The identifier for the account in the source system",
+                                      "example": "FFARMS1",
+                                      "x-internal-note": "Pulled from company_users.remote_id"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "description": "The name on the account in the source system",
+                                      "example": "Fastidious Farms",
+                                      "x-internal-note": "We pull this from company_users"
+                                    },
+                                    "company": {
+                                      "type": "object",
+                                      "description": "Information about the company associated with the account",
+                                      "required": [
+                                        "id",
+                                        "name"
+                                      ],
+                                      "properties": {
+                                        "id": {
+                                          "type": "string",
+                                          "description": "A unique identifier for the company in the Bushel system",
+                                          "x-internal-note": "company.id",
+                                          "example": "123"
+                                        },
+                                        "name": {
+                                          "type": "string",
+                                          "description": "The name of the company",
+                                          "example": "Local Grain Co-op"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "202": {
+                    "description": "Accepted"
+                  },
+                  "500": {
+                    "description": "Internal server error"
+                  }
+                }
+              }
+            },
+            "{$CUSTOMER_BASE_URL}/unsubscribe": {
+              "post": {
+                "operationId": "unsubscribeCallback",
+                "summary": "Customer Account Unsubscribed Notification",
+                "description": "A callback which is invoked when the user cancels a subscription for one of their accounts.",
+                "security": [
+                  {
+                    "StaticKeyAuth": []
+                  }
+                ],
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/paths/~1partner/get/callbacks/onData/%7B%24CUSTOMER_BASE_URL%7D~1subscribe/post/requestBody/content/application~1json/schema"
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "202": {
+                    "description": "Accepted"
+                  },
+                  "500": {
+                    "description": "Internal server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "$CUSTOMER_BASE_URL/feed": {
+      "post": {
+        "operationId": "feed",
+        "servers": [
+          {
+            "url": "https:///"
+          }
+        ],
+        "tags": [
+          "Bushel Production™",
+          "Bushel Fulfillment™"
+        ],
+        "summary": "Data Feed",
+        "description": "The data push happens on a recurring basis, typically in 1hr intervals. Records that have been updated since the last push are transmitted.",
+        "security": [
+          {
+            "StaticKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "title": "Accounts",
+                    "properties": {
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "title": "Account Wrapper",
+                          "required": [
+                            "account"
+                          ],
+                          "properties": {
+                            "account": {
+                              "type": "object",
+                              "title": "Account",
+                              "description": "The associated account in the source system",
+                              "required": [
+                                "id",
+                                "remote_id",
+                                "name",
+                                "company",
+                                "phones",
+                                "created_at",
+                                "updated_at",
+                                "deleted_at"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "description": "The unique identifier for the account in the Bushel system",
+                                  "x-internal-note": "In keeping with the convention, this is company_id_remote_id (company_users.company_id_remote_id)",
+                                  "example": "123-FFARMS1"
+                                },
+                                "remote_id": {
+                                  "type": "string",
+                                  "description": "The identifier for the account in the source system",
+                                  "example": "FFARMS1",
+                                  "x-internal-note": "Pulled from company_users.remote_id"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "The name on the account in the source system",
+                                  "example": "Fastidious Farms",
+                                  "x-internal-note": "This is presented as a single name rather than first/last name for several reasons.\n1. Many folks have only one name, or more than two names\n2. Corporations don't have a first/last name\n"
+                                },
+                                "company": {
+                                  "type": "object",
+                                  "title": "Company",
+                                  "description": "The company from which the data is sourced.",
+                                  "required": [
+                                    "id",
+                                    "name"
+                                  ],
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "description": "A unique identifier for the company in the Bushel system.",
+                                      "example": "123",
+                                      "x-internal-note": "company.id"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "description": "The name of the company.",
+                                      "example": "Local Grain Co-op",
+                                      "x-internal-note": "company.name"
+                                    }
+                                  }
+                                },
+                                "phones": {
+                                  "type": "array",
+                                  "description": "A list of known phones associated with the account.",
+                                  "items": {
+                                    "type": "object",
+                                    "title": "Phone",
+                                    "required": [
+                                      "phone"
+                                    ],
+                                    "properties": {
+                                      "phone": {
+                                        "type": "string",
+                                        "example": "2025550123",
+                                        "description": "The phone number. Typically 10 digits long. Contains only digits."
+                                      }
+                                    }
+                                  }
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the account was created in the Bushel system.",
+                                  "example": "2020-11-30T21:15:32.000Z"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the account was updated in the Bushel system.",
+                                  "example": "2020-11-30T21:15:32.000Z"
+                                },
+                                "deleted_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the account was deleted in the Bushel system.",
+                                  "nullable": true,
+                                  "example": null
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "meta": {
+                        "type": "object",
+                        "required": [
+                          "current_page",
+                          "page_count",
+                          "page_size",
+                          "total_count",
+                          "total_pages"
+                        ],
+                        "properties": {
+                          "current_page": {
+                            "type": "integer",
+                            "description": "The current page number.",
+                            "example": 1
+                          },
+                          "page_count": {
+                            "type": "integer",
+                            "description": "The number of records on the current page.",
+                            "example": 1
+                          },
+                          "page_size": {
+                            "type": "integer",
+                            "description": "The size of a full page.",
+                            "example": 1000
+                          },
+                          "total_count": {
+                            "type": "integer",
+                            "description": "The total number of records for the query.",
+                            "example": 1
+                          },
+                          "total_pages": {
+                            "type": "integer",
+                            "description": "The total number of pages for the query.",
+                            "example": 1
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "title": "Commodity Balances",
+                    "properties": {
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "title": "Commodity Balance Wrapper",
+                          "required": [
+                            "commodity_balance"
+                          ],
+                          "properties": {
+                            "commodity_balance": {
+                              "type": "object",
+                              "title": "Commodity Balance",
+                              "description": "The commodity balance in the source system",
+                              "required": [
+                                "id",
+                                "remote_id",
+                                "account",
+                                "company",
+                                "quantity",
+                                "quantity_uom",
+                                "location",
+                                "position",
+                                "commodity",
+                                "remote_created_at",
+                                "remote_updated_at",
+                                "created_at",
+                                "updated_at"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "description": "The unique identifier for the commodity balance in the Bushel system",
+                                  "x-internal-note": "In keeping with the convention, this is company_id_remote_id (company_users.company_id_remote_id)",
+                                  "example": "123-ABC-456-DEF"
+                                },
+                                "remote_id": {
+                                  "type": "string",
+                                  "description": "The id of the commodity balance in the remote system.",
+                                  "example": "ABC-456-DEF"
+                                },
+                                "account": {
+                                  "type": "object",
+                                  "description": "The associated account in the source system",
+                                  "required": [
+                                    "id"
+                                  ],
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "description": "The unique identifier for the account in the Bushel system",
+                                      "x-internal-note": "In keeping with the convention, this is company_id_remote_id (company_users.company_id_remote_id)",
+                                      "example": "123-FFARMS1"
+                                    }
+                                  }
+                                },
+                                "company": {
+                                  "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/0/properties/data/items/properties/account/properties/company"
+                                },
+                                "quantity": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The quantity used for this commodity balance.",
+                                  "example": 920
+                                },
+                                "quantity_uom": {
+                                  "type": "string",
+                                  "description": "The unit of measurement used for this commodity balance.",
+                                  "nullable": true,
+                                  "example": "bu"
+                                },
+                                "location": {
+                                  "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/2/properties/data/items/properties/contract/properties/location"
+                                },
+                                "position": {
+                                  "type": "object",
+                                  "title": "Position",
+                                  "required": [
+                                    "id",
+                                    "name"
+                                  ],
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "description": "The unique identifier for the id of the position in the Bushel system",
+                                      "nullable": true,
+                                      "example": "123-ABC"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "description": "The display name of the position",
+                                      "nullable": true,
+                                      "example": "Open Storage"
+                                    }
+                                  }
+                                },
+                                "commodity": {
+                                  "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/2/properties/data/items/properties/contract/properties/commodity"
+                                },
+                                "remote_created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the commodity balance was created in the remote system.",
+                                  "nullable": true,
+                                  "example": "2020-11-30T03:01:03.000Z"
+                                },
+                                "remote_updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the commodity balance was last updated in the remote system.",
+                                  "nullable": true,
+                                  "example": "2020-12-01T03:01:03.000Z"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the commodity balance was created in the Bushel system.",
+                                  "example": "2020-11-30T21:14:56.000Z"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the commodity balance was updated in the Bushel system.",
+                                  "example": "2020-11-30T21:14:56.000Z"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "meta": {
+                        "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/0/properties/meta"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "title": "Contracts",
+                    "properties": {
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "title": "Contract Wrapper",
+                          "required": [
+                            "contract"
+                          ],
+                          "properties": {
+                            "contract": {
+                              "type": "object",
+                              "title": "Contract",
+                              "required": [
+                                "id",
+                                "remote_id",
+                                "display_id",
+                                "company_user_id",
+                                "account",
+                                "company_id",
+                                "company_name",
+                                "company",
+                                "elevator_name",
+                                "location",
+                                "crop_id",
+                                "crop_name",
+                                "commodity",
+                                "delivery_period_start",
+                                "delivery_period_end",
+                                "completed",
+                                "quantity_contracted",
+                                "quantity_submitted",
+                                "quantity_measure",
+                                "quantity_uom",
+                                "futures_price",
+                                "futures_price_locked",
+                                "basis_cost",
+                                "basis_cost_locked",
+                                "bid",
+                                "currency",
+                                "contract_type",
+                                "contract_subtype",
+                                "remote_created_at",
+                                "remote_updated_at",
+                                "created_at",
+                                "updated_at",
+                                "deleted_at"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "description": "The unique id of the contract.",
+                                  "example": "437-FFARMS1_1006"
+                                },
+                                "remote_id": {
+                                  "type": "string",
+                                  "description": "The id of the contract in the remote system.",
+                                  "example": "FFARMS1_1006"
+                                },
+                                "display_id": {
+                                  "type": "string",
+                                  "description": "The id to display on the contract.",
+                                  "nullable": true,
+                                  "example": "1006"
+                                },
+                                "company_user_id": {
+                                  "type": "string",
+                                  "description": "Deprecated. Superceded by `account.id`.",
+                                  "example": "1896553",
+                                  "deprecated": true,
+                                  "nullable": true
+                                },
+                                "account": {
+                                  "type": "object",
+                                  "description": "The associated account in the source system",
+                                  "required": [
+                                    "id"
+                                  ],
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "description": "The unique identifier for the account in the Bushel system",
+                                      "x-internal-note": "In keeping with the convention, this is company_id_remote_id (company_users.company_id_remote_id)",
+                                      "example": "123-FFARMS1"
+                                    }
+                                  }
+                                },
+                                "company_id": {
+                                  "type": "string",
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `company.id`.",
+                                  "nullable": true,
+                                  "example": "123"
+                                },
+                                "company_name": {
+                                  "type": "string",
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `company.name`.",
+                                  "nullable": true,
+                                  "example": "Local Grain Co-op"
+                                },
+                                "company": {
+                                  "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/0/properties/data/items/properties/account/properties/company"
+                                },
+                                "elevator_name": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "example": "Fargo",
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `location.name`."
+                                },
+                                "location": {
+                                  "type": "object",
+                                  "title": "Location",
+                                  "required": [
+                                    "id",
+                                    "name",
+                                    "city",
+                                    "address_line_1",
+                                    "address_line_2",
+                                    "state",
+                                    "zip_code"
+                                  ],
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "description": "A unique identifier for the location in the Bushel system.",
+                                      "example": "123"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "description": "The name of the location.",
+                                      "example": "Minneapolis"
+                                    },
+                                    "city": {
+                                      "type": "string",
+                                      "description": "The location's city.",
+                                      "nullable": true,
+                                      "example": "Minneapolis"
+                                    },
+                                    "address_line_1": {
+                                      "type": "string",
+                                      "description": "First line of the locations address.",
+                                      "nullable": true,
+                                      "example": "100 Portland Ave"
+                                    },
+                                    "address_line_2": {
+                                      "type": "string",
+                                      "description": "Second line of the elevator's address.",
+                                      "nullable": true,
+                                      "example": null
+                                    },
+                                    "state": {
+                                      "type": "string",
+                                      "description": "The location's state.",
+                                      "nullable": true,
+                                      "example": "MN"
+                                    },
+                                    "zip_code": {
+                                      "type": "string",
+                                      "description": "The location's zip code.",
+                                      "nullable": true,
+                                      "example": "55401"
+                                    }
+                                  }
+                                },
+                                "crop_id": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `commodity.id`.",
+                                  "example": "4-C"
+                                },
+                                "crop_name": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "example": "Corn",
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `commodity.name`."
+                                },
+                                "commodity": {
+                                  "type": "object",
+                                  "title": "Commodity",
+                                  "required": [
+                                    "id",
+                                    "name"
+                                  ],
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "description": "The id of the commodity.",
+                                      "nullable": true,
+                                      "example": "4-C"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "description": "The name of the commodity.",
+                                      "nullable": true,
+                                      "example": "Corn"
+                                    }
+                                  }
+                                },
+                                "delivery_period_start": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "nullable": true,
+                                  "example": "2020-01-16"
+                                },
+                                "delivery_period_end": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "nullable": true,
+                                  "example": "2020-11-26"
+                                },
+                                "completed": {
+                                  "type": "boolean",
+                                  "description": "Represents whether the contract has been completed or not.",
+                                  "example": false
+                                },
+                                "quantity_contracted": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The quantity contracted and measured in units specified by quantity_uom.",
+                                  "example": 7777
+                                },
+                                "quantity_submitted": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The quantity submitted and measured in units specified by quantity_uom.",
+                                  "example": 920
+                                },
+                                "quantity_measure": {
+                                  "type": "string",
+                                  "example": "amount"
+                                },
+                                "quantity_uom": {
+                                  "type": "string",
+                                  "description": "The unit of measurement used for this contract.",
+                                  "example": "BU"
+                                },
+                                "futures_price": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The futures market price agreed upon for this contract.",
+                                  "nullable": true,
+                                  "example": 4.11
+                                },
+                                "futures_price_locked": {
+                                  "type": "boolean",
+                                  "description": "Represents whether the futures_price has been locked in on this contract.",
+                                  "example": true
+                                },
+                                "futures_month": {
+                                  "type": "string",
+                                  "description": "The month of the future.",
+                                  "example": "2017-07",
+                                  "nullable": true
+                                },
+                                "basis_cost": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The agreed upon cost given to the buyer of the contract. This is usually negative but not always.",
+                                  "nullable": true,
+                                  "example": -0.17
+                                },
+                                "basis_cost_locked": {
+                                  "type": "boolean",
+                                  "description": "Represents whether the basis_cost has been locked in on this contract.",
+                                  "example": true
+                                },
+                                "bid": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The agreed upon cash price of the contract. Determined by adding futures_price and basis_cost.",
+                                  "nullable": true,
+                                  "example": 3.92
+                                },
+                                "currency": {
+                                  "type": "string",
+                                  "description": "The type of currency used for this contract. e.g. USD or CAD.",
+                                  "example": "USD"
+                                },
+                                "contract_type": {
+                                  "type": "string",
+                                  "description": "The type of the contract.",
+                                  "nullable": true,
+                                  "example": "Priced Later"
+                                },
+                                "contract_subtype": {
+                                  "type": "string",
+                                  "description": "The subtype of the contract.",
+                                  "nullable": true,
+                                  "example": null
+                                },
+                                "remote_created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the contract was created in the remote system.",
+                                  "nullable": true,
+                                  "example": "2020-11-30T03:01:03.000Z"
+                                },
+                                "remote_updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the contract was last updated in the remote system.",
+                                  "nullable": true,
+                                  "example": "2020-12-01T03:01:03.000Z"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the contract was created in the Bushel system.",
+                                  "example": "2020-11-30T21:14:56.000Z"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the contract was updated in the Bushel system.",
+                                  "example": "2020-11-30T21:14:56.000Z"
+                                },
+                                "deleted_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the contract was deleted in the Bushel system.",
+                                  "nullable": true
+                                },
+                                "adjustments": {
+                                  "type": "array",
+                                  "description": "Additional monetary adjustments to the contract.",
+                                  "items": {
+                                    "type": "object",
+                                    "required": [
+                                      "id",
+                                      "remote_id",
+                                      "currency",
+                                      "price",
+                                      "price_type",
+                                      "rate_type",
+                                      "remote_created_at",
+                                      "remote_updated_at",
+                                      "created_at",
+                                      "updated_at",
+                                      "deleted_at"
+                                    ],
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "description": "The unique id of the adjustment.",
+                                        "example": "437-B012345_P_01"
+                                      },
+                                      "remote_id": {
+                                        "type": "string",
+                                        "description": "The id of the adjustment in the remote system.",
+                                        "example": "B012345_P_01"
+                                      },
+                                      "currency": {
+                                        "type": "string",
+                                        "description": "The currency used in this adjustment. Defaults to currency of the parent entity.",
+                                        "nullable": true,
+                                        "example": "USD"
+                                      },
+                                      "price": {
+                                        "type": "string",
+                                        "description": "The monetary value of the adjustment.",
+                                        "nullable": true,
+                                        "example": "-0.02"
+                                      },
+                                      "price_type": {
+                                        "type": "string",
+                                        "description": "The reason for the adjustment.",
+                                        "enum": [
+                                          "brokerage",
+                                          "freight",
+                                          "other"
+                                        ],
+                                        "example": "freight"
+                                      },
+                                      "rate_type": {
+                                        "type": "string",
+                                        "description": "The way the adjustment affects pricing.",
+                                        "enum": [
+                                          "flat",
+                                          "per_uom"
+                                        ],
+                                        "example": "per_uom"
+                                      },
+                                      "remote_created_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the adjustment was created in the remote system.",
+                                        "nullable": true,
+                                        "example": "2020-11-29T21:01:03.000Z"
+                                      },
+                                      "remote_updated_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the adjustment was last updated in the remote system.",
+                                        "nullable": true,
+                                        "example": "2020-11-30T21:01:03.000Z"
+                                      },
+                                      "created_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the adjustment was created in the Bushel system.",
+                                        "example": "2020-11-30T21:15:58.000Z"
+                                      },
+                                      "updated_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the adjustment was updated in the Bushel system.",
+                                        "example": "2020-11-30T21:15:58.000Z"
+                                      },
+                                      "deleted_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the adjustment was deleted in the Bushel system.",
+                                        "nullable": true
+                                      }
+                                    }
+                                  }
+                                },
+                                "amendments": {
+                                  "description": "Amendments made to the contract.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "required": [
+                                      "id",
+                                      "remote_id",
+                                      "basis_cost",
+                                      "bid",
+                                      "futures_code",
+                                      "futures_price",
+                                      "sequence_number",
+                                      "quantity",
+                                      "priced_at",
+                                      "remote_created_at",
+                                      "remote_updated_at",
+                                      "created_at",
+                                      "updated_at",
+                                      "deleted_at"
+                                    ],
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "description": "The unique id of the contract amendment.",
+                                        "example": "437-B012345_P_01"
+                                      },
+                                      "remote_id": {
+                                        "type": "string",
+                                        "description": "The id of the contract amendment in the remote system.",
+                                        "example": "B012345_P_01"
+                                      },
+                                      "basis_cost": {
+                                        "type": "string",
+                                        "format": "double",
+                                        "description": "The agreed upon cost given by the buyer of the contract amendment. Usually negative but not always.",
+                                        "nullable": true,
+                                        "example": "-0.12"
+                                      },
+                                      "bid": {
+                                        "type": "string",
+                                        "format": "double",
+                                        "description": "The agreed upon price per unit of the contract. Determined by adding futures_price and basis_cost.",
+                                        "nullable": true,
+                                        "example": "4.52"
+                                      },
+                                      "futures_code": {
+                                        "type": "string",
+                                        "description": "Either a CME symbol or a Year-Month string.",
+                                        "nullable": true,
+                                        "example": "2017-12"
+                                      },
+                                      "futures_price": {
+                                        "type": "string",
+                                        "format": "double",
+                                        "description": "The futures market price per unit for this contract amendment.",
+                                        "nullable": true,
+                                        "example": "4.66"
+                                      },
+                                      "sequence_number": {
+                                        "type": "integer",
+                                        "description": "A number indicating the logical ordering of the amendment relative to other amendments.",
+                                        "example": 1
+                                      },
+                                      "quantity": {
+                                        "type": "string",
+                                        "description": "The quantity locked in at the given price. The units of measurement should be the same as those used on the contract.",
+                                        "example": "10000.00000"
+                                      },
+                                      "priced_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the contract amendment was finalized in the remote system.",
+                                        "nullable": true,
+                                        "example": "2020-11-29T21:01:03.000Z"
+                                      },
+                                      "remote_created_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the contract amendment was created in the remote system.",
+                                        "nullable": true,
+                                        "example": "2020-11-29T21:01:03.000Z"
+                                      },
+                                      "remote_updated_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the contract amendment was last updated in the remote system.",
+                                        "nullable": true,
+                                        "example": "2020-11-30T21:01:03.000Z"
+                                      },
+                                      "created_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the contract amendment was created in the Bushel system.",
+                                        "example": "2020-11-30T21:15:58.000Z"
+                                      },
+                                      "updated_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the contract amendment was updated in the Bushel system.",
+                                        "example": "2020-11-30T21:15:58.000Z"
+                                      },
+                                      "deleted_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the contract amendment was deleted in the Bushel system.",
+                                        "nullable": true
+                                      },
+                                      "adjustments": {
+                                        "type": "array",
+                                        "description": "Additional monetary adjustments to the amendment.",
+                                        "items": {
+                                          "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/2/properties/data/items/properties/contract/properties/adjustments/items"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "meta": {
+                        "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/0/properties/meta"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "title": "Settlements",
+                    "properties": {
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "title": "Settlement Wrapper",
+                          "required": [
+                            "settlement"
+                          ],
+                          "properties": {
+                            "settlement": {
+                              "type": "object",
+                              "title": "Settlement",
+                              "required": [
+                                "id",
+                                "remote_id",
+                                "account",
+                                "commodity_name",
+                                "commodity",
+                                "company",
+                                "currency",
+                                "net_payment",
+                                "payment_status",
+                                "quantity_uom",
+                                "settled_quantity",
+                                "remote_created_at",
+                                "remote_updated_at",
+                                "created_at",
+                                "updated_at"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "description": "The id of the settlement.",
+                                  "example": "437-FFARMS1_3303"
+                                },
+                                "remote_id": {
+                                  "type": "string",
+                                  "description": "The id of the settlement in the remote system.",
+                                  "example": "FFARMS1_3303"
+                                },
+                                "account": {
+                                  "type": "object",
+                                  "description": "The associated account in the source system",
+                                  "required": [
+                                    "id"
+                                  ],
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "description": "The unique identifier for the account in the Bushel system",
+                                      "x-internal-note": "In keeping with the convention, this is company_id_remote_id (company_users.company_id_remote_id)",
+                                      "example": "123-FFARMS1"
+                                    }
+                                  }
+                                },
+                                "comments": {
+                                  "type": "string",
+                                  "description": "Any comments for the settlement.",
+                                  "nullable": true,
+                                  "example": null
+                                },
+                                "commodity_name": {
+                                  "type": "string",
+                                  "example": "Soybeans",
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `commodity.name`."
+                                },
+                                "commodity": {
+                                  "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/2/properties/data/items/properties/contract/properties/commodity"
+                                },
+                                "commodity_year": {
+                                  "type": "string",
+                                  "description": "The growing season(s) of the settlement's commodity.",
+                                  "nullable": true,
+                                  "example": null
+                                },
+                                "company_name": {
+                                  "type": "string",
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `company.name`.",
+                                  "nullable": true,
+                                  "example": "Local Grain Co-op"
+                                },
+                                "company": {
+                                  "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/0/properties/data/items/properties/account/properties/company"
+                                },
+                                "currency": {
+                                  "type": "string",
+                                  "description": "The currency in which the settlement is transacted. e.g. USD or CAD.",
+                                  "example": "USD"
+                                },
+                                "display_id": {
+                                  "type": "string",
+                                  "description": "A non-unique, often simplified, identifier for the settlement displayed to growers.",
+                                  "nullable": true,
+                                  "example": "3303"
+                                },
+                                "gross_payment": {
+                                  "type": "string",
+                                  "description": "The gross monetary value of the settlement.",
+                                  "nullable": true,
+                                  "example": "4353.350000"
+                                },
+                                "net_payment": {
+                                  "type": "string",
+                                  "description": "The net monetary value of the settlement.",
+                                  "example": "3353.350000"
+                                },
+                                "payment_status": {
+                                  "type": "string",
+                                  "description": "The status of the settlement, not standardized.",
+                                  "example": "paid"
+                                },
+                                "quantity_uom": {
+                                  "type": "string",
+                                  "description": "The unit of measure for quantity values on the settlement.",
+                                  "example": "bu"
+                                },
+                                "settled_on_date": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "description": "The date when settling occurred.",
+                                  "nullable": true,
+                                  "example": "2020-11-29"
+                                },
+                                "settled_quantity": {
+                                  "type": "string",
+                                  "description": "The quantity of the settlement.",
+                                  "example": "1000"
+                                },
+                                "remote_created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the settlement was created in the remote system.",
+                                  "example": "2020-11-28T21:01:17.000Z"
+                                },
+                                "remote_updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the settlement was last updated in the remote system.",
+                                  "example": "2020-11-30T21:01:17.000Z"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the settlement was created in the Bushel system.",
+                                  "example": "2020-11-30T21:15:32.000Z"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the settlement was updated in the Bushel system.",
+                                  "example": "2020-11-30T21:15:32.000Z"
+                                },
+                                "deleted_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the settlement was deleted in the Bushel system.",
+                                  "nullable": true,
+                                  "example": null
+                                },
+                                "tickets": {
+                                  "description": "A list of constituent scale tickets for the settlement.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "required": [
+                                      "id"
+                                    ],
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "description": "The id of the ticket.",
+                                        "example": "437-FFARMS1_11001"
+                                      }
+                                    }
+                                  }
+                                },
+                                "settlement_payouts": {
+                                  "description": "Settlement payouts are a record of transactions issued against a settlement.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "required": [
+                                      "id",
+                                      "remote_id",
+                                      "payee_names",
+                                      "amount",
+                                      "remote_created_at",
+                                      "remote_updated_at",
+                                      "created_at",
+                                      "updated_at"
+                                    ],
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "description": "The id of the payout.",
+                                        "example": "437-FFARMS1_3303_5001"
+                                      },
+                                      "remote_id": {
+                                        "type": "string",
+                                        "description": "The id of the payout in the remote system.",
+                                        "example": "FFARMS1_3303_5001"
+                                      },
+                                      "display_id": {
+                                        "type": "string",
+                                        "description": "The display id for the payout. e.g. check or transit number.",
+                                        "nullable": true,
+                                        "example": "5001"
+                                      },
+                                      "payee_id": {
+                                        "type": "string",
+                                        "description": "The remote id for the account recieving the payout.",
+                                        "nullable": true,
+                                        "example": "123456"
+                                      },
+                                      "payee_name": {
+                                        "type": "string",
+                                        "description": "The name on the account recieving the payout.",
+                                        "example": "Doe Family Farms"
+                                      },
+                                      "amount": {
+                                        "type": "string",
+                                        "description": "The monetary amount of the payout.",
+                                        "example": "3353.350000"
+                                      },
+                                      "payment_type": {
+                                        "type": "string",
+                                        "description": "The method of payment. e.g. Check, Wire, ACH, Cash, etc.",
+                                        "nullable": true,
+                                        "example": "Check"
+                                      },
+                                      "remote_created_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the payout was created in the remote system.",
+                                        "example": "2020-11-29T21:16:14.000Z"
+                                      },
+                                      "remote_updated_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the payout was last updated in the remote system.",
+                                        "example": "2020-11-30T21:16:14.000Z"
+                                      },
+                                      "created_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the payout was created in the Bushel system.",
+                                        "example": "2020-11-30T21:16:42.000Z"
+                                      },
+                                      "updated_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the payout was updated in the Bushel system.",
+                                        "example": "2020-11-30T21:16:42.000Z"
+                                      }
+                                    }
+                                  }
+                                },
+                                "settlement_payment_adjustments": {
+                                  "description": "Settlement payment adjustments account for factors which modify the gross monetary value of the settlement.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "required": [
+                                      "remote_id",
+                                      "amount",
+                                      "display_name",
+                                      "remote_created_at",
+                                      "remote_updated_at",
+                                      "created_at",
+                                      "updated_at"
+                                    ],
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "description": "The id of the payment adjustment.",
+                                        "example": "437-FFARMS1_3303_4001"
+                                      },
+                                      "remote_id": {
+                                        "type": "string",
+                                        "description": "The id of the payment adjustment in the remote system.",
+                                        "example": "FFARMS1_3303_4001"
+                                      },
+                                      "adjustment_code": {
+                                        "type": "string",
+                                        "description": "The code indicating the purpose of the payment adjustment, not standardized.",
+                                        "nullable": true,
+                                        "example": "24"
+                                      },
+                                      "amount": {
+                                        "type": "string",
+                                        "description": "The monetary value of the payment adjustment.",
+                                        "example": "-1000.00000"
+                                      },
+                                      "currency": {
+                                        "type": "string",
+                                        "description": "The currency of the amount on the payment adjustment. e.g. USD or CAD.",
+                                        "nullable": true,
+                                        "example": "USD"
+                                      },
+                                      "display_name": {
+                                        "type": "string",
+                                        "description": "The name indicating the purpose of the payment adjustment.",
+                                        "example": "Less Freight"
+                                      },
+                                      "remote_created_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the payment adjustment was created in the remote system.",
+                                        "example": "2020-11-29T21:01:03.000Z"
+                                      },
+                                      "remote_updated_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the payment adjustment was last updated in the remote system.",
+                                        "example": "2020-11-30T21:01:03.000Z"
+                                      },
+                                      "created_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the payment adjustment was created in the Bushel system.",
+                                        "example": "2020-11-30T21:15:58.000Z"
+                                      },
+                                      "updated_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Formatted date/time stamp for when the payment adjustment was updated in the Bushel system.",
+                                        "example": "2020-11-30T21:15:58.000Z"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "meta": {
+                        "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/0/properties/meta"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "title": "Tickets",
+                    "properties": {
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "title": "Scale Ticket Wrapper",
+                          "required": [
+                            "scale_ticket"
+                          ],
+                          "properties": {
+                            "scale_ticket": {
+                              "type": "object",
+                              "title": "Scale Ticket",
+                              "required": [
+                                "id",
+                                "remote_id",
+                                "company_user_id",
+                                "company_user_name",
+                                "account",
+                                "company_id",
+                                "company_name",
+                                "company",
+                                "elevator_name",
+                                "location",
+                                "dock_dollars",
+                                "remarks",
+                                "addendum",
+                                "grader",
+                                "weigh_master",
+                                "truck_name",
+                                "truck_license",
+                                "truck_driver",
+                                "weigh_in_at",
+                                "weigh_out_at",
+                                "remote_created_at",
+                                "remote_updated_at",
+                                "created_at",
+                                "updated_at",
+                                "deleted_at",
+                                "splits",
+                                "farm_fields",
+                                "crop_id",
+                                "crop_name",
+                                "commodity",
+                                "crop_amount_uom",
+                                "crop_weight_uom",
+                                "amounts_uom",
+                                "weights_uom",
+                                "gross_amount",
+                                "gross_weight",
+                                "net_amount",
+                                "net_weight",
+                                "shrink_amount",
+                                "shrink_weight",
+                                "dock_amount",
+                                "dock_weight",
+                                "tare_weight"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "description": "The id of the scale ticket.",
+                                  "example": "437-FF3478"
+                                },
+                                "remote_id": {
+                                  "type": "string",
+                                  "description": "The id of the scale ticket in the remote system.",
+                                  "example": "11002"
+                                },
+                                "company_user_id": {
+                                  "type": "string",
+                                  "description": "Deprecated. Superceded by `account.id` and `splits[].account`.",
+                                  "example": "1896553",
+                                  "deprecated": true,
+                                  "nullable": true
+                                },
+                                "company_user_name": {
+                                  "type": "string",
+                                  "description": "Deprecated. Superceded by `account.id` and `splits[].account`.",
+                                  "example": "Fastidious Farms",
+                                  "deprecated": true
+                                },
+                                "account": {
+                                  "type": "object",
+                                  "description": "The primary account in the source system. Not always available -- depends on the source system. See `splits`.",
+                                  "nullable": true,
+                                  "required": [
+                                    "id"
+                                  ],
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "description": "The unique identifier for the account in the Bushel system.",
+                                      "x-internal-note": "In keeping with the convention, this is company_id_remote_id (company_users.company_id_remote_id)",
+                                      "example": "123-FFARMS1"
+                                    }
+                                  }
+                                },
+                                "company_id": {
+                                  "type": "string",
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `company.id`.",
+                                  "nullable": true,
+                                  "example": "123"
+                                },
+                                "company_name": {
+                                  "type": "string",
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `company.name`.",
+                                  "nullable": true,
+                                  "example": "Local Grain Co-op"
+                                },
+                                "company": {
+                                  "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/0/properties/data/items/properties/account/properties/company"
+                                },
+                                "elevator_name": {
+                                  "type": "string",
+                                  "example": "Minneapolis",
+                                  "nullable": true,
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `location.name`."
+                                },
+                                "location": {
+                                  "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/2/properties/data/items/properties/contract/properties/location"
+                                },
+                                "dock_dollars": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The amount of money docked from the ticket, given in the local currency.",
+                                  "nullable": true,
+                                  "example": null,
+                                  "x-internal-note": "This appears to be a 1.0.0 ticket attribute and as such is not present on our newest ticket standard.\nFor 1.1.0 tickets, dock value is found in grade factors (remarks).\n\nIt is worth noting that Connect API represents remarks as a set of free-form key-value pairs, instead of\nan array of grade factor objects.\n\nSo we might want to both update the way the Connect API represents remarks to be more consistent with our\ninbound standard, as well as deprecate this attribute (dock_dollars). See CONNECT-490.\n"
+                                },
+                                "remarks": {
+                                  "type": "object",
+                                  "additionalProperties": true
+                                },
+                                "addendum": {
+                                  "type": "object",
+                                  "description": "Additional information about the ticket can be added here.",
+                                  "additionalProperties": true
+                                },
+                                "grader": {
+                                  "type": "string",
+                                  "description": "The name of the employee that graded the crop.",
+                                  "nullable": true,
+                                  "example": "Tom Johnson"
+                                },
+                                "weigh_master": {
+                                  "type": "string",
+                                  "description": "The name of the employee that weighed the crop.",
+                                  "nullable": true,
+                                  "example": "Mike Johnson"
+                                },
+                                "truck_name": {
+                                  "type": "string",
+                                  "description": "The name of the truck that hauled the crop.",
+                                  "nullable": true,
+                                  "example": "Big Red"
+                                },
+                                "truck_license": {
+                                  "type": "string",
+                                  "description": "The license of the truck that hauled the crop.",
+                                  "nullable": true,
+                                  "example": "XYZ-820"
+                                },
+                                "truck_driver": {
+                                  "type": "string",
+                                  "description": "The name of the driver that hauled the crop.",
+                                  "nullable": true,
+                                  "example": "Bob Smith"
+                                },
+                                "weigh_in_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "The date/time stamp of the start of the weigh in.",
+                                  "nullable": true,
+                                  "example": "2020-02-17T19:35:29+00:00"
+                                },
+                                "weigh_out_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "The date/time stamp of the end of the weigh in.",
+                                  "nullable": true,
+                                  "example": "2020-02-17T20:05:29+00:00"
+                                },
+                                "remote_created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the ticket was created in the remote system.",
+                                  "nullable": true,
+                                  "example": "2020-11-29T21:01:03+00:00"
+                                },
+                                "remote_updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the ticket was last updated in the remote system.",
+                                  "nullable": true,
+                                  "example": "2020-11-30T21:01:03+00:00"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the ticket was created in the Bushel system.",
+                                  "example": "2020-11-30T21:13:31+00:00"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Formatted date/time stamp for when the ticket was last updated in the Bushel system.",
+                                  "example": "2020-11-30T21:13:31+00:00"
+                                },
+                                "deleted_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "nullable": true,
+                                  "example": null
+                                },
+                                "splits": {
+                                  "description": "Used to track how much of the ticket was assigned to each account.",
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "required": [
+                                      "split",
+                                      "remote_user_name",
+                                      "account"
+                                    ],
+                                    "properties": {
+                                      "split": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "description": "The percent of the ticket allocated to the split.",
+                                        "example": 0.6
+                                      },
+                                      "remote_user_name": {
+                                        "type": "string",
+                                        "description": "Deprecated. Superceded by `account.name`.",
+                                        "example": "Fastidious Farms",
+                                        "deprecated": true
+                                      },
+                                      "company_user_id": {
+                                        "type": "string",
+                                        "description": "Deprecated. Superceded by `account.id`.",
+                                        "example": "1896553",
+                                        "deprecated": true
+                                      },
+                                      "account": {
+                                        "type": "object",
+                                        "required": [
+                                          "id",
+                                          "name"
+                                        ],
+                                        "description": "The associated account in the source system. Data not available for all splits.",
+                                        "properties": {
+                                          "id": {
+                                            "type": "string",
+                                            "description": "The unique identifier for the account in the Bushel system",
+                                            "x-internal-note": "In keeping with the convention, this is company_id_remote_id (company_users.company_id_remote_id)",
+                                            "nullable": true,
+                                            "example": "123-FFARMS1"
+                                          },
+                                          "name": {
+                                            "type": "string",
+                                            "description": "The name on the account in the source system",
+                                            "example": "Fastidious Farms",
+                                            "nullable": true
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "farm_fields": {
+                                  "type": "array",
+                                  "description": "The farm fields that the account user associated with the ticket.",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "object",
+                                    "required": [
+                                      "name"
+                                    ],
+                                    "properties": {
+                                      "name": {
+                                        "type": "string",
+                                        "description": "The name of the field the account user entered.",
+                                        "example": "North East Section"
+                                      }
+                                    }
+                                  }
+                                },
+                                "crop_id": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "example": "4-C",
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `commodity.id`."
+                                },
+                                "crop_name": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "example": "Corn",
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `commodity.name`."
+                                },
+                                "crop_amount_uom": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "example": "BU",
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `amounts_uom`."
+                                },
+                                "crop_weight_uom": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "example": "lbs",
+                                  "deprecated": true,
+                                  "description": "Deprecated. Superceded by `weights_uom`."
+                                },
+                                "commodity": {
+                                  "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/2/properties/data/items/properties/contract/properties/commodity"
+                                },
+                                "amounts_uom": {
+                                  "type": "string",
+                                  "description": "The unit of measurement used for expressing quantities by amount.",
+                                  "nullable": true,
+                                  "example": "BU"
+                                },
+                                "weights_uom": {
+                                  "type": "string",
+                                  "description": "The unit of measurement used for expressing quantities by weight.",
+                                  "nullable": true,
+                                  "example": "lbs"
+                                },
+                                "gross_amount": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The gross amount weighed on the scale.",
+                                  "nullable": true,
+                                  "example": 920
+                                },
+                                "gross_weight": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The gross weight weighed on the scale.",
+                                  "nullable": true,
+                                  "example": 0
+                                },
+                                "net_amount": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The net amount weighed on the scale.",
+                                  "nullable": true,
+                                  "example": 920
+                                },
+                                "net_weight": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The net weight weighed on the scale.",
+                                  "nullable": true,
+                                  "example": 51520
+                                },
+                                "shrink_amount": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The amount of crop discounted to account for shrink.",
+                                  "nullable": true,
+                                  "example": 0
+                                },
+                                "shrink_weight": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The weight of crop discounted to account for shrink.",
+                                  "nullable": true,
+                                  "example": 0
+                                },
+                                "dock_amount": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The amount of crop that was docked.",
+                                  "nullable": true,
+                                  "example": 0
+                                },
+                                "dock_weight": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The weight of crop that was docked.",
+                                  "nullable": true,
+                                  "example": 0
+                                },
+                                "tare_weight": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "description": "The weight of the truck.",
+                                  "nullable": true,
+                                  "example": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "meta": {
+                        "$ref": "#/paths/%24CUSTOMER_BASE_URL~1feed/post/requestBody/content/application~1json/schema/oneOf/0/properties/meta"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Indicates that the request has been successfully handled."
+          },
+          "500": {
+            "description": "Indicates that an internal server error has occurred. The request will be retried at a later time."
+          }
+        }
+      }
+    },
+    "/api/v1/channels/{channel_slug}/feeds/{entity_type}/marker": {
+      "post": {
+        "operationId": "postMarker",
+        "tags": [
+          "Bushel Production™",
+          "Bushel Fulfillment™"
+        ],
+        "summary": "Update Feed Marker",
+        "description": "The feed marker is used to track which records need to be transmitted on the next run. It automatically advances\nas records are pushed to {$CUSTOMER_BASE_URL}/feed. If the Customer wants Bushel to retransmit records that have\nalready been pushed, this endpoint can be used to reset the marker for the next run. The specified marker\ntimestamp must be in the year 2016 or later.\n",
+        "security": [
+          {
+            "StaticKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "channel_slug",
+            "description": "A unique identifier for the Customer's channel. Provided by Bushel.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "insuranceco"
+            }
+          },
+          {
+            "in": "path",
+            "name": "entity_type",
+            "description": "The entity type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "tickets",
+              "enum": [
+                "accounts",
+                "tickets",
+                "contracts",
+                "settlements"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "timestamp"
+                ],
+                "properties": {
+                  "timestamp": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "minimum date of 2016-01-01T00:00:00+00:00"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Marker updated"
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "example": "VALIDATION_ERROR"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "You have validation errors in your submission"
+                    },
+                    "validation_messages": {
+                      "type": "object",
+                      "properties": {
+                        "timestamp": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "The timestamp field is required"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

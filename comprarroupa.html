@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Art</title>
+        <script src="home.js"></script>
+        <link rel="stylesheet" href="home.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <link rel="stylesheet" href="https://fontawesome.com/icons/instagram?f=brands&s=solid">
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLTYYFBY0E"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+      
+          gtag('config', 'G-PLTYYFBY0E');
+        </script>
+    </head>
+    <style>
+       
+    </style>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo"><a href="home.html"><img src="imagens_site/sualogo.png" alt=""></a></div>
+            <ul class="nav-links">
+                <li><a href="tenis.html">TÊNIS</a></li>
+                <li><a href="calca.html">CALÇA</a></li>
+                <li><a href="camisa.html">CAMISA</a></li>
+            </ul>
+            <div class="icons"><div class="hamburger" onclick="toggleMenu()">
+                &#9776;
+            </div>  <a href="carrinho.html" class="car"><span class="material-symbols-outlined">shopping_cart</span></a>
+                </div>
+        </nav>
+    </header>
+
+    <aside class="side-menu" id="side-menu">
+        <div class="close-btn" onclick="toggleMenu()">&#10006;</div>
+        <ul>
+            <li><a href="tenis.html" onclick="toggleMenu()">TÊNIS</a></li>
+            <li><a href="calca.html" onclick="toggleMenu()">CALÇA</a></li>
+            <li><a href="camisa.html" onclick="toggleMenu()">CAMISA</a></li>
+        </ul>
+    </aside>
+<div class="container-compra">
+   <div class="container-compra-home">
+        <h1 id="nome-produto">Nome do Produto</h1>
+        <div class="carrossel-compra-home">
+            <button class="antes" onclick="proximoslide(-1, 'imagemhome')">&#10094;</button>
+            <div class="imagemhome ">
+                <img id="imagem-produto" class="imagem" src="imagemProduto" alt="Produto">
+                <img id="imagem-produto2" class="imagem" src="imagemProduto2" alt="Imagem Produto 2">
+                <img id="imagem-produto3" class="imagem" src="imagemProduto3" alt="Imagem Produto 3">
+            </div>
+            <button class="depois" onclick="proximoslide(1, 'imagemhome')">&#10095;</button>
+        </div>
+    </div>
+   
+    <H2 class="h2">TAMANHOS</H2>
+    <div class="size-buttons">
+        <button class="size-button" data-type="calca">P</button>
+        <button class="size-button" data-type="calca">M</button>
+        <button class="size-button" data-type="calca">G</button>
+        <button class="size-button" data-type="calca">GG</button>
+    </div>
+    <div class="off-compra-home"><p id="off-pruto"></p></div>
+    <div class="preco-compra-home">
+        <p id="preco-promo" class="produtopromo"></p>
+        <p id="preco-produto"class="precodescontado"></p>
+        </div>
+        <div class="comprar-carrinho">
+        <div class="text-box">
+            <button class="buy-btn" onclick="addCarrinho(this)" >
+                <span class="icon">🛒</span>  COMPRAR
+            </button>
+        </div>
+    </div>
+</div>
+<div class="veja"><h3>VEJA TAMBEM...</h3></div>
+     <div class="scroll-tipos">
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+                <div class="ofer">
+                    <span class="material-symbols-outlined">sell</span>
+                </div>
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">ROUPA</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="calcaitem">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <!--IMAGEM 2-->
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+                <div class="ofer">
+                    <span class="material-symbols-outlined">sell</span>
+                </div>
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">ROUPA</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="calcaitem">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <!--IMAGEM 3-->
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+                <div class="ofer">
+                    <span class="material-symbols-outlined">sell</span>
+                </div>
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">CALÇADO</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="tenis">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <!--IMAGEM 4-->
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+                <div class="ofer">
+                    <span class="material-symbols-outlined">sell</span>
+                </div>
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">CALÇADO</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="tenis">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <!--IMAGEM 5-->
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+                <div class="ofer">
+                    <span class="material-symbols-outlined">sell</span>
+                </div>
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">CALÇADO</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="tenis">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+    </div>
+   <script>
+     
+    /*ADD CARRINHO*/
+    function addCarrinho(button) {
+        const itemCarrinho = button.closest('.container-compra');
+        const carImagem = itemCarrinho.querySelector('.imagem').src;
+        const carPrecoStr = itemCarrinho.querySelector('.precodescontado').textContent.trim();
+       const carnome = itemCarrinho.querySelector('#nome-produto').textContent.trim();
+
+        // Adicione logs para verificar o conteúdo de carPrecoStr
+        console.log(`Preço original coletado: ${carPrecoStr}`);
+
+        // Remover qualquer símbolo de moeda e espaços extras
+        const carPrecoLimpo = carPrecoStr.replace(/[^\d,.-]/g, '');
+        console.log(`Preço após limpeza: ${carPrecoLimpo}`);
+
+        // Converter o preço para número
+        const carPreco = parseFloat(carPrecoLimpo.replace(',', '.'));
+       
+
+        // Verificar se a conversão foi bem-sucedida
+        if (isNaN(carPreco)) {
+            alert('O preço do produto não é válido.');
+            console.error(`Falha ao converter preço: ${carPrecoStr} (Limpo: ${carPrecoLimpo})`);
+            return;
+        }
+
+        // Obter o tamanho selecionado
+        const sizeButtons = itemCarrinho.querySelectorAll('.size-button');
+        let selectedSize = null;
+        sizeButtons.forEach(button => {
+            if (button.classList.contains('selected')) {
+                selectedSize = button.textContent;
+            }
+        });
+
+        if (!selectedSize) {
+            alert('Por favor, selecione um tamanho.');
+            return;
+        }
+
+        // Obter o carrinho do localStorage, ou inicializar um array vazio se não houver nada
+        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+        const novoItem = {
+            imagem: carImagem,
+            tamanho: selectedSize,
+            preco: carPreco,
+            nome: carnome,
+            
+        };
+
+        // Adicionar o novo item ao carrinho
+        carrinho.push(novoItem);
+
+        // Salvar o carrinho atualizado no localStorage
+        localStorage.setItem('carrinho', JSON.stringify(carrinho));
+
+        // Redirecionar para a página do carrinho
+        window.location.href = 'carrinho.html';
+        gtag('event', 'click', {
+      'event_category': 'button',
+      'event_label': 'buy',
+      'value': 1
+    });
+    }
+
+    /*TAMANHOS*/
+    let selectedSize = null;
+
+    document.querySelectorAll('.size-button').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.size-button').forEach(btn => btn.classList.remove('selected'));
+            // Adicionar a classe 'selected' ao botão clicado
+            this.classList.add('selected');
+            selectedSize = this.innerText;
+        });
+    });
+
+/*FIM TAMANHOS*/
+
+/*PROXIMO SLIDE*/
+let slideIndex = 0;
+const slides = document.querySelectorAll('.imagemhome .imagem');
+
+function proximoslide(n) {
+slideIndex += n;
+if (slideIndex < 0) {
+ slideIndex = slides.length - 1;
+} else if (slideIndex >= slides.length) {
+ slideIndex = 0;
+}
+atualizar();
+}
+
+function atualizar() {
+slides.forEach((slide, index) => {
+ slide.style.opacity = (index === slideIndex) ? '1' : '0';
+});
+}
+atualizar()
+/*PROXIMO SLIDE*/
+   </script>
+</body>
+</html>

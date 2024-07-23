@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="shortcut icon"  href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs7jp8So34X9gzuuG1uVySZdWWZtj3Rbq7dQ&s">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu site</title>
+    <link rel="stylesheet" href="home.css">
+    <script src="home.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://fontawesome.com/icons/instagram?f=brands&s=solid">
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PLTYYFBY0E"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PLTYYFBY0E');
+</script>
+</head>
+<body>
+    <button class="whats"onclick="WhatsAppMsg()"><img src="https://seeklogo.com/images/W/whatsapp-logo-33F6A82887-seeklogo.com.png" alt=""></button>
+    <!--NAVBAR-->
+        <header>
+        <nav class="navbar">
+            <div class="logo"><a href=""><img src="imagens_site/sualogo.png" alt=""></a></div>
+            <ul class="nav-links">
+                <li><a href="tenis.html">TÊNIS</a></li>
+                <li><a href="calca.html">CALÇA</a></li>
+                <li><a href="camisa.html">CAMISA</a></li>
+            </ul>
+            <div class="icons"><div class="hamburger" onclick="toggleMenu()">
+                &#9776;
+            </div>  <a href="carrinho.html" class="car"><span class="material-symbols-outlined">shopping_cart</span></a>
+                </div>
+        </nav>
+    </header>
+
+    <aside class="side-menu" id="side-menu">
+        <div class="close-btn" onclick="toggleMenu()">&#10006;</div>
+        <ul>
+            <li><a href="tenis.html" onclick="toggleMenu()">TÊNIS</a></li>
+            <li><a href="calca.html" onclick="toggleMenu()">CALÇA</a></li>
+            <li><a href="camisa.html" onclick="toggleMenu()">CAMISA</a></li>
+        </ul>
+    </aside>
+    <!--FIM NAVBAR-->
+   <!--promoçao mobile--> 
+   <div class="carrossel-mobile">
+    <div class="container-carrossel-mobile">
+        <button class="antes" onclick="proximoslide(-1)">&#10094;</button>
+        <div class="imagemhome">
+            <img src="imagens_site/carmobile1.png" alt=""class="imagem" >
+            <img src="https://i.pinimg.com/736x/eb/94/ad/eb94ade055daf13c118011a948c26f95.jpg" alt=""class="imagem">
+            <img src="imagens_site/carmobile2.png" alt=""class="imagem">
+        </div>
+        <button class="depois" onclick="proximoslide(1)">&#10095;</button>
+    </div>
+   </div>
+   
+    <!--CARROSSEL-->
+    <div class="content">
+        <div class="slides">
+            <input type="radio" class="input" name="slide" id="slide1" checked>
+            <input type="radio" class="input" name="slide" id="slide2">
+            <input type="radio" class="input" name="slide" id="slide3">
+    
+            <div class="slide s1">
+                <a href="#"><img src="imagens_site/carrossel1.png" alt=""></a>
+            </div>
+    
+            <div class="slide">
+                <a href="#"><img src="imagens_site/carrossel3.png" alt=""></a>
+            </div>
+    
+            <div class="slide">
+                <a href="#"><img src="imagens_site/carrossel2.png" alt=""></a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="navegation">
+        <label class="bar" for="slide1"></label>
+        <label class="bar" for="slide2"></label>
+        <label class="bar" for="slide3"></label>
+    </div>
+    <!-- FIM CARROSSEL-->
+<!-- CRONOMETRO--><div class="oferta"><h2>OFERTA</h2><div id="timer">00:00:00</div></div>
+    <!--SCROLL-->
+    <div class="caixa">
+        <!--IMAGEM 1-->
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+                <div class="ofer">
+                    <span class="material-symbols-outlined">sell</span>
+                </div>
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">ROUPA</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="calcaitem">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <!--IMAGEM 2-->
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+                <div class="ofer">
+                    <span class="material-symbols-outlined">sell</span>
+                </div>
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">ROUPA</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="calcaitem">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <!--IMAGEM 3-->
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+                <div class="ofer">
+                    <span class="material-symbols-outlined">sell</span>
+                </div>
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">CALÇADO</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="tenis">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <!--IMAGEM 4-->
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+                <div class="ofer">
+                    <span class="material-symbols-outlined">sell</span>
+                </div>
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">CALÇADO</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="tenis">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <!--IMAGEM 5-->
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+                <div class="ofer">
+                    <span class="material-symbols-outlined">sell</span>
+                </div>
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">CALÇADO</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="tenis">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <!-- FIM SCROLL-->
+    </div>
+
+    <section class="hidden">
+    <div class="promo4">
+        <img src="https://static.vecteezy.com/system/resources/previews/030/761/291/non_2x/modern-sport-sneakers-blue-color-ai-generative-free-png.png" alt="Tenis"class="imagem-produto">
+        <div>
+            <h1>PRODUTO</h1>
+            <p>Seu produto no lado esquedo</p>
+            <button class="button-64" role="button"><span class="text">comprar</span></button>
+        </div>
+    </div>
+     </section>
+     
+     <div class="veja"><h3>VEJA TAMBEM...</h3></div>
+     <div class="scroll-tipos">
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">CALÇADO</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="tenis">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">CALÇADO</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="tenis">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">CALÇADO</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="tenis">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">CALÇADO</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="tenis">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        <div class="caritens">
+            <a href="tenis.html">
+                <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+            </a>
+            <div class="off">off 00%</div>
+            <p class="desc">CALÇADO</p>
+            <div class="preço">
+                <p class="sublinhado">$000</p>
+                <p>$000</p>
+            </div>
+            <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+            <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+            <input type="hidden" class="calca1" value="tenis">
+            <button onclick="comprarProdutos(this)">Comprar</button>
+        </div>
+        
+    </div>
+    <section class="hidden">
+    <div class="promo5">
+        <img src="https://img.irroba.com.br/fit-in/600x600/filters:fill(transparent):quality(80)/lojadomi/catalog/conjunto/calca-cruz.png" alt="Tenis">
+        <div>
+            <h1>PRODUTO</h1>
+            <p>Seu produto no lado esquedo</p>
+            <button class="button-64" role="button"><span class="text">comprar</span></button>
+        </div>
+    </div>
+</section>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>SOBRE NÓS</h3>
+                <p>Estou fazendo esse site para demonstração do meu produto, espero que goste!</p>
+            </div>
+            <div class="footer-column">
+                <h3>CONTATO</h3>
+                <div class="email">
+                    <span class="material-symbols-outlined" id="email-span">mail</span>
+                    <p>pedrolsantos390@gmail.com</p>
+                    <span class="material-symbols-outlined" id="email-span"> call</span>
+                    <p>(99)9999-9999</p>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>SIGA-NOS</h3>
+                <div class="social-icons">
+                    <a href="https://facebook.com" target="_blank"><span class="material-icons">facebook</span></a>
+                    <a href="https://twitter.com" target="_blank"><span class="material-icons">twitter</span></a>
+                    <a href="https://instagram.com" target="_blank"><span class="material-icons">instagram</span></a>
+                    <a href="https://linkedin.com" target="_blank"><span class="material-icons">linkedin</span></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!--<button onclick="limparLocalStorage()">Limpar localStorage</button>-->
+<!--fim cronometro-->
+    <script>
+        /*ANIMAÇOES SECTIONS*/
+
+        const myObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry)=> {
+        if(entry.isIntersecting){
+            entry.target.classList.add('show')
+        }else{
+            entry.target.classList.remove('show')
+        }
+    })
+})
+const elements = document.querySelectorAll('.hidden')
+
+elements.forEach((element) => myObserver.observe(element))
+
+
+images.forEach(image => {
+
+    image.addEventListener('mouseout', () => {
+        images.forEach(img => {
+            img.classList.remove('blur');
+        });
+    });
+});
+/* FIM ANIMAÇOES SECTIONS*/
+
+        function WhatsAppMsg(){
+            let mensagemMSG = `Olá, gostaria de tirar uma dúvida.`;
+            const encodedMensagemMSG = encodeURIComponent(mensagemMSG);
+            const phoneNumber = "5554981124330";
+            const whatsappUrlMSG = `https://wa.me/${phoneNumber}?text=${encodedMensagemMSG}`;
+
+            // Abrir o WhatsApp com a mensagem
+            window.open(whatsappUrlMSG, '_blank');
+        }
+        function startTimer(endTime, display) {
+    const intervalId = setInterval(function () {
+        const now = new Date().getTime();
+        const distance = endTime - now;
+
+        if (distance <= 0) {
+            clearInterval(intervalId);
+            display.textContent = "00:00:00";
+            alert("A oferta terminou!");
+            localStorage.removeItem('endTime');
+            return;
+        }
+
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        display.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+}
+
+window.onload = function () {
+    const display = document.querySelector("#timer");
+
+    if (display) {
+        let endTime = localStorage.getItem('endTime');
+        if (!endTime) {
+            endTime = new Date().getTime() + 24 * 60 * 60 * 1000; // 24 horas a partir de agora
+            localStorage.setItem('endTime', endTime);
+        } else {
+            endTime = Number(endTime); // Convert string to number
+        }
+
+        startTimer(endTime, display);
+    } else {
+        console.error("Elemento #timer não encontrado na página.");
+    }
+};
+// CARROSSEL MOBILE
+let slideIndex = 0;
+        const slides = document.querySelectorAll('.imagemhome .imagem');
+    
+        function proximoslide(n) {
+            slideIndex += n;
+            if (slideIndex < 0) {
+                slideIndex = slides.length - 1;
+            } else if (slideIndex >= slides.length) {
+                slideIndex = 0;
+            }
+            atualizar();
+        }
+    
+        function atualizar() {
+            slides.forEach((slide, index) => {
+                slide.style.opacity = (index === slideIndex) ? '1' : '0';
+            });
+        }
+    
+        atualizar();
+    </script>
+    <!--fim cronometro-->
+</body>
+</html>

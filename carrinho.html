@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://fontawesome.com/icons/instagram?f=brands&s=solid">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLTYYFBY0E"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+  
+      gtag('config', 'G-PLTYYFBY0E');
+    </script>
+    <title>Document</title>
+</head>
+<body>
+    <!--NAVBAR-->
+    <header>
+        <nav class="navbar">
+            <div class="logo"><a href="home.html"><img src="imagens_site/sualogo.png" alt=""></a></div>
+            <ul class="nav-links">
+                <li><a href="tenis.html" onclick="toggleMenu()">TÊNIS</a></li>
+                <li><a href="calca.html" onclick="toggleMenu()">CALÇA</a></li>
+                <li><a href="camisa.html" onclick="toggleMenu()">CAMISA</a></li>
+            </ul>
+            <div class="icons"><div class="hamburger" onclick="toggleMenu()">
+                &#9776;
+            
+        </nav>
+        
+    </header>
+
+    <aside class="side-menu" id="side-menu">
+        <div class="close-btn" onclick="toggleMenu()">&#10006;</div>
+        <ul>
+            <li><a href="tenis.html" onclick="toggleMenu()">TÊNIS</a></li>
+            <li><a href="calca.html" onclick="toggleMenu()">CALÇA</a></li>
+            <li><a href="camisa.html" onclick="toggleMenu()">CAMISA</a></li>
+        </ul>
+    </aside>
+    <!--FIM NAVBAR-->
+    <h1 class="seu-carrinho">Seu Carrinho <span class="material-symbols-outlined"  id="spancar">shopping_cart</span></h1>
+    <div class="carrinho-div">
+        <div id="carrinho-items"></div>
+    </div>
+    <div class="form-container">
+        <h2>Informações de Entrega</h2>
+        <form id="endereco-form" action="#" method="post">
+            <div class="form-group">
+                <label for="cep">CEP:</label>
+                <input type="text" id="cep" name="cep" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="rua">Rua:</label>
+                <input type="text" id="rua" name="rua" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="bairro">Bairro:</label>
+                <input type="text" id="bairro" name="bairro" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="cidade">Cidade:</label>
+                <input type="text" id="cidade" name="cidade" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="numero">Número:</label>
+                <input type="text" id="numero" name="numero" required>
+            </div>
+            <div class="text-box">
+                <div class="comprar-limpra">
+                    <button class="buy-now-btn" id="comprarfim" onclick="gerarMensagem()">
+                        <span class="icon">💳</span> Comprar Agora
+                    </button>
+                <button class="clear-cart-btn" onclick="limparCarrinho()">
+                    <span class="icon">🗑️</span> Limpar Carrinho
+                </button></div>
+        </form>
+    </div>
+        <div id="total">0,00</div>
+        <div id="quantidade">Quantidade: 0</div>
+    </div>
+
+</div>
+</div>
+<div class="veja"><h3>VEJA TAMBEM...</h3></div>
+<div class="scroll-tipos">
+    <div class="caritens">
+        <a href="tenis.html">
+            <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+            <div class="ofer">
+                <span class="material-symbols-outlined">sell</span>
+            </div>
+        </a>
+        <div class="off">off 00%</div>
+        <p class="desc">ROUPA</p>
+        <div class="preço">
+            <p class="sublinhado">$000</p>
+            <p>$000</p>
+        </div>
+        <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+        <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+        <input type="hidden" class="calca1" value="calcaitem">
+        <button onclick="comprarProdutos(this)">Comprar</button>
+    </div>
+    <!--IMAGEM 2-->
+    <div class="caritens">
+        <a href="tenis.html">
+            <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+            <div class="ofer">
+                <span class="material-symbols-outlined">sell</span>
+            </div>
+        </a>
+        <div class="off">off 00%</div>
+        <p class="desc">ROUPA</p>
+        <div class="preço">
+            <p class="sublinhado">$000</p>
+            <p>$000</p>
+        </div>
+        <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+        <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+        <input type="hidden" class="calca1" value="calcaitem">
+        <button onclick="comprarProdutos(this)">Comprar</button>
+    </div>
+    <!--IMAGEM 3-->
+    <div class="caritens">
+        <a href="tenis.html">
+            <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+            <div class="ofer">
+                <span class="material-symbols-outlined">sell</span>
+            </div>
+        </a>
+        <div class="off">off 00%</div>
+        <p class="desc">CALÇADO</p>
+        <div class="preço">
+            <p class="sublinhado">$000</p>
+            <p>$000</p>
+        </div>
+        <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+        <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+        <input type="hidden" class="calca1" value="tenis">
+        <button onclick="comprarProdutos(this)">Comprar</button>
+    </div>
+    <!--IMAGEM 4-->
+    <div class="caritens">
+        <a href="tenis.html">
+            <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+            <div class="ofer">
+                <span class="material-symbols-outlined">sell</span>
+            </div>
+        </a>
+        <div class="off">off 00%</div>
+        <p class="desc">CALÇADO</p>
+        <div class="preço">
+            <p class="sublinhado">$000</p>
+            <p>$000</p>
+        </div>
+        <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+        <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+        <input type="hidden" class="calca1" value="tenis">
+        <button onclick="comprarProdutos(this)">Comprar</button>
+    </div>
+    <!--IMAGEM 5-->
+    <div class="caritens">
+        <a href="tenis.html">
+            <img src="imagens_site/imagem1.png" alt="Tênis DC Preto" class="imagem-produto">
+            <div class="ofer">
+                <span class="material-symbols-outlined">sell</span>
+            </div>
+        </a>
+        <div class="off">off 00%</div>
+        <p class="desc">CALÇADO</p>
+        <div class="preço">
+            <p class="sublinhado">$000</p>
+            <p>$000</p>
+        </div>
+        <input type="hidden" class="imagem-extra1" value="imagens_site/imagem2.png">
+        <input type="hidden" class="imagem-extra2" value="imagens_site/imagem3.png">
+        <input type="hidden" class="calca1" value="tenis">
+        <button onclick="comprarProdutos(this)">Comprar</button>
+    </div>
+    
+</div>
+<script src="home.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    carregarCarrinho();
+});
+const ok = document.querySelector('.ok')
+const bom = document.querySelector('.bom')
+const exelente = document.querySelector('.exelente')
+function updateTheme(total) {
+    if (total > 1 && total <= 200) {
+        document.body.className = 'happy';
+    } else if (total > 200 && total <= 350) {
+        document.body.className = 'happier';
+       
+    } else if (total > 350) {
+        document.body.className = 'happiest';
+        
+    } else if(total === 0) {
+        document.body.className = ''; // Remover todas as classes de tema
+        
+    }
+    
+}
+const form = document.getElementById('endereco-form');
+    const cepInput = document.getElementById('cep');
+    const ruaInput = document.getElementById('rua');
+    const bairroInput = document.getElementById('bairro');
+    const cidadeInput = document.getElementById('cidade');
+    const numeroInput = document.getElementById('numero');
+    const comprarBtn = document.getElementById('comprarfim');
+    let cepValido = false; // Variável para controlar se o CEP é válido
+
+    form.addEventListener('input', () => {
+        if (cepValido &&
+            ruaInput.value.trim() !== '' &&
+            bairroInput.value.trim() !== '' &&
+            cidadeInput.value.trim() !== '' &&
+            numeroInput.value.trim() !== '') {
+            comprarBtn.disabled = false;
+        } else {
+            comprarBtn.disabled = true;
+        }
+    });
+
+    cepInput.addEventListener('blur', () => {
+        const cep = cepInput.value.replace(/\D/g, '');
+
+        if (cep === '') {
+        cepValido = false;
+        return;
+    }
+    
+    
+        if (cep.length !== 8) {
+            alert('CEP inválido. Informe um CEP válido.');
+            cepValido = false;
+            return;
+        }
+
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.erro) {
+                    alert('CEP não encontrado. Informe um CEP válido.');
+                    cepValido = false;
+                    return;
+                }
+                ruaInput.value = data.logradouro;
+                bairroInput.value = data.bairro;
+                cidadeInput.value = data.localidade;
+                cepValido = true; // Marca o CEP como válido
+            })
+            .catch(error => {
+                console.error('Erro ao buscar CEP:', error);
+                cepValido = false;
+            });
+    });
+
+    function carregarCarrinho() {
+        const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        const carrinhoItems = document.getElementById('carrinho-items');
+        const totalcar = document.getElementById('total');
+        const quantidade = document.getElementById('quantidade');
+        let total = 0;
+        let quant = 0;
+        carrinhoItems.innerHTML = '';
+
+
+        if (carrinho.length === 0) {
+            carrinhoItems.innerHTML = '<p>O carrinho está vazio.</p>';
+            totalcar.textContent = 'Total: 0,00';
+            quantidade.textContent = 'Quantidade: 0';
+        } else {
+            carrinho.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('carrinho-item');
+
+                // Assegure que a quantidade seja um número
+                if (!item.quantidade) item.quantidade = 1;
+
+                itemDiv.innerHTML = `
+                 <div class="preco-qant">
+                <img src="${item.imagem}" alt="Produto">
+                <div class="infromacoes-car">
+                <p>Nome: ${item.nome}</p>
+                <p>Tamanho: ${item.tamanho}</p>
+                <p>Preço: ${item.preco.toFixed(2)}</p>
+                <p>Quantidade: ${item.quantidade || 1}</p>
+                 </div>
+            </div>
+            <button class="diminuir-quantidade" data-index="${index}">-</button>
+            <button class="aumentar-quantidade" data-index="${index}">+</button>
+            <button class="excluir-item" data-index="${index}"><span class="material-symbols-outlined">delete</span></button>`;
+
+                carrinhoItems.appendChild(itemDiv);
+
+                // Adicionar o preço ao total, considerando a quantidade
+                total += parseFloat(item.preco) * parseInt(item.quantidade, 10);
+                quant += parseInt(item.quantidade, 10);
+            });
+
+            // Atualizar o total na página
+            totalcar.textContent = `TOTAL: ${total.toFixed(2)}`;
+            quantidade.textContent = `Quantidade: ${quant}`;
+
+            updateTheme(total);
+
+            // Adicionar eventos de clique para os botões de excluir, aumentar e diminuir quantidade
+            document.querySelectorAll('.excluir-item').forEach(button => {
+                button.addEventListener('click', excluirItem);
+            });
+            document.querySelectorAll('.aumentar-quantidade').forEach(button => {
+                button.addEventListener('click', aumentarQuantidade);
+            });
+            document.querySelectorAll('.diminuir-quantidade').forEach(button => {
+                button.addEventListener('click', diminuirQuantidade);
+            });
+        }
+    }
+
+   
+
+    function excluirItem(event) {
+        const index = event.target.getAttribute('data-index');
+        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        carrinho.splice(index, 1);
+        localStorage.setItem('carrinho', JSON.stringify(carrinho));
+        carregarCarrinho();
+    }
+
+    function aumentarQuantidade(event) {
+        const index = event.target.dataset.index;
+        const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        carrinho[index].quantidade = (parseInt(carrinho[index].quantidade, 10) || 0) + 1;
+        localStorage.setItem('carrinho', JSON.stringify(carrinho));
+        carregarCarrinho();
+    }
+
+    function diminuirQuantidade(event) {
+        const index = event.target.dataset.index;
+        const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        if (carrinho[index].quantidade > 1) {
+            carrinho[index].quantidade = (parseInt(carrinho[index].quantidade, 10) || 1) - 1;
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            carregarCarrinho();
+        }
+    }
+
+    function limparCarrinho() {
+        // Remove o item 'carrinho' do localStorage
+        localStorage.removeItem('carrinho');
+        
+        // Recarrega a exibição do carrinho na página
+        carregarCarrinho();
+    }
+    
+    // Chama a função carregarCarrinho quando a página é carregada
+    window.onload = carregarCarrinho;
+
+    // Adiciona um evento de clique ao botão de limpar carrinho
+    document.getElementById('limpar-carrinho').addEventListener('click', limparCarrinho);
+</script>
+</body>
+</html>

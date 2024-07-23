@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLTYYFBY0E"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+  
+      gtag('config', 'G-PLTYYFBY0E');
+    </script>
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo"><a href="home.html"><img src="imagens_site/sualogo.png" alt=""></a></div>
+            <ul class="nav-links">
+                <li><a href="tenis.html">TÊNIS</a></li>
+                <li><a href="calca.html">CALÇA</a></li>
+                <li><a href="camisa.html">CAMISA</a></li>
+            </ul>
+            <div class="icons"><div class="hamburger" onclick="toggleMenu()">
+                &#9776;
+            </div>  <a href="carrinho.html" class="car"><span class="material-symbols-outlined">shopping_cart</span></a>
+                </div>
+        </nav>
+    </header>
+
+    <aside class="side-menu" id="side-menu">
+        <div class="close-btn" onclick="toggleMenu()">&#10006;</div>
+        <ul>
+            <li><a href="tenis.html" onclick="toggleMenu()">TÊNIS</a></li>
+            <li><a href="calca.html" onclick="toggleMenu()">CALÇA</a></li>
+            <li><a href="camisa.html" onclick="toggleMenu()">CAMISA</a></li>
+        </ul>
+    </aside>
+    <script src="home.js"></script>
+    <!--FIM NAVBAR-->
+    <button id="fil" onclick="fil()" class="button-29" role="button">filtro</button>
+    <div id="filtros">
+        <div class="container-filtro">
+            <div class="pm">
+                <span style="color: rgb(3, 238, 255);">PREÇO</span>
+                <span style="color: rgb(3, 175, 255);">MINIMO</span>
+            </div>
+            <div class="filtro">
+                <input type="number" id="preco-min" placeholder="0">
+                <button onclick="filtrarprodutos()" class="Filtrar"><span class="material-symbols-outlined">
+                    tune
+                    </span></button>
+                <input type="number" id="preco-max" placeholder="0">
+            </div>
+            <div class="pm">
+                <span style="color: rgb(94, 92, 243);">PREÇO</span>
+                <span style="color: rgb(0, 75, 187);">MAXIMO</span>
+            </div>
+        </div>
+    </div>
+    <div id="lista-produtos" class="lista-produtos"></div>
+    <script>
+        window.onload = () => {
+    displayprodutos(tenis);
+}
+
+window.onload = () => {
+    if (window.location.pathname.includes('tenis')) {
+        displayprodutos(tenis);
+    } else if (window.location.pathname.includes('camisa')) {
+        displayprodutos(camisa);
+    } else {
+        displayprodutos(calca);
+    }
+};
+function filtrarprodutos(){
+    const min = document.getElementById('preco-min').value
+    const max = document.getElementById('preco-max').value
+
+    const filtrarprodutos = tenis.filter(produto => {
+        return produto.preco >= min && produto.preco <= max
+    })
+    displayprodutos(filtrarprodutos)
+ }
+    </script>
+</body>
+</html>
